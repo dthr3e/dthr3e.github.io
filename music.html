@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Music - dthr33.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Font Awesome (brands) for social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    /* Base */
+    html, body {
+      margin: 0;
+      height: 100%;
+      font-family: Verdana, sans-serif;
+      transition: background 1s ease, color 1s ease;
+    }
+
+    /* Provide space for fixed header so content never overlaps */
+    body {
+      padding-top: 84px; /* matches header height on desktop */
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 3;
+      background: transparent;
+      box-sizing: border-box;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .site-title {
+      margin: 0;
+      font-weight: bold;
+      font-size: 20px;
+      transition: color 0.5s ease;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      white-space: nowrap;
+    }
+
+    /* Navigation: contained, wrapped, centered */
+    nav {
+      flex: 1;
+    }
+    nav ul {
+      list-style: none;
+      margin: 0;
+      padding: 0 8px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;        /* wrap to next line on narrow screens */
+      max-width: 100%;        /* never overflow viewport */
+      box-sizing: border-box;
+    }
+    nav a {
+      text-decoration: none;
+      font-weight: bold;
+      letter-spacing: 0.4px;
+      transition: color 0.25s ease;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+      opacity: 0;
+      animation: fadeIn 0.9s ease forwards;
+      white-space: nowrap;    /* keep each item intact */
+    }
+    nav li:nth-child(1) a { animation-delay: 0.1s; }
+    nav li:nth-child(2) a { animation-delay: 0.2s; }
+    nav li:nth-child(3) a { animation-delay: 0.3s; }
+    nav li:nth-child(4) a { animation-delay: 0.4s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    nav a:hover { color: #ffd580; }
+    nav a.active {
+      border-bottom: 2px solid currentColor;
+      padding-bottom: 2px;
+      color: #ffd580;
+    }
+
+    /* Content */
+    main {
+      flex: 1;
+      z-index: 2;
+      text-align: center;
+      padding: 20px;
+    }
+
+    /* Footer social */
+    footer {
+      width: 100%;
+      z-index: 2;
+      padding: 16px 0 22px;
+      text-align: center;
+width: 100%;
+  padding: 15px 0;
+  text-align: center;
+  z-index: 2;
+  background: transparent;   
+  box-sizing: border-box;
+    }
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+    .social-icons a {
+      color: inherit;
+      font-size: 26px;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+    .social-icons a:hover {
+      transform: scale(1.2);
+      color: #ffd580;
+    }
+
+    /* Ripple canvas */
+    #ripple-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Responsive: if header wraps to two lines, increase body padding-top */
+    @media (max-width: 560px) {
+      body { padding-top: 118px; }
+      header {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px 16px;
+      }
+      .site-title {
+        width: 100%;
+        text-align: center;
+      }
+      nav ul { justify-content: center; }
+    }
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1 class="site-title">dthr33.com</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="workshop.html">Workshop</a></li>
+        <li><a href="racing.html">Racing</a></li>
+        <li><a class="active" href="music.html">Music</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Music</h2>
+    <p>Welcome to the Music page. Content goes here.</p>
+  </main>
+
+  <footer>
+    <div class="social-icons" aria-label="Social links">
+      <a href="https://www.instagram.com/dthr33bikes/" target="_blank" rel="noopener" aria-label="Instagram">
+        <i class="fa-brands fa-instagram"></i>
+      </a>
+      <a href="https://www.strava.com/athletes/161348" target="_blank" rel="noopener" aria-label="Strava">
+        <i class="fa-brands fa-strava"></i>
+      </a>
+      <a href="https://www.mixcloud.com/dthree/" target="_blank" rel="noopener" aria-label="Mixcloud">
+        <i class="fa-brands fa-mixcloud"></i>
+      </a>
+    </div>
+  </footer>
+
+  <canvas id="ripple-canvas"></canvas>
+
+  <script>
+    /* Time-based background with adaptive text color */
+    function setBackground() {
+      const hour = new Date().getHours();
+      let background, textColor;
+
+      if (hour >= 5 && hour < 12) {
+        background = "linear-gradient(to bottom, #FFD580, #FFB347)"; // Morning
+        textColor = "#000000";
+      } else if (hour >= 12 && hour < 17) {
+        background = "linear-gradient(to bottom, #87CEEB, #00BFFF)"; // Afternoon
+        textColor = "#000000";
+      } else if (hour >= 17 && hour < 20) {
+        background = "linear-gradient(to bottom, #FF7E5F, #FEB47B)"; // Evening
+        textColor = "#000000";
+      } else {
+        background = "linear-gradient(to bottom, #2C3E50, #000000)"; // Night
+        textColor = "#FFFFFF";
+      }
+
+      document.body.style.background = background;
+      document.body.style.color = textColor;
+
+      document.querySelector(".site-title").style.color = textColor;
+      document.querySelectorAll("nav a").forEach(link => { link.style.color = textColor; });
+      document.querySelectorAll(".social-icons a").forEach(icon => { icon.style.color = textColor; });
+    }
+    setBackground();
+    setInterval(setBackground, 60 * 60 * 1000);
+
+    /* Cursor ripple effect */
+    (function () {
+      const canvas = document.getElementById("ripple-canvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const ripples = [];
+      const maxRipples = 200;
+      const baseStrength = 0.75;
+      const ringWidth = 10;
+
+      function addRipple(x, y, power = 1) {
+        if (ripples.length > maxRipples) ripples.shift();
+        ripples.push({
+          x, y,
+          r: 2,
+          maxR: 220 * power,
+          alpha: 0.35 * power,
+          grow: 2.2 * power,
+          fade: 0.01 * power
+        });
+      }
+
+      function getRippleColor() {
+        const isLightText = /^rgb\(\s*255\s*,\s*255\s*,\s*255\s*\)/.test(
+          getComputedStyle(document.body).color
+        );
+        return isLightText ? "rgba(255, 255, 255, " : "rgba(0, 0, 0, ";
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = "lighter";
+        const baseColor = getRippleColor();
+
+        for (let i = 0; i < ripples.length; i++) {
+          const rp = ripples[i];
+
+          const gradient = ctx.createRadialGradient(
+            rp.x, rp.y, Math.max(0, rp.r - ringWidth),
+            rp.x, rp.y, rp.r + ringWidth * 2
+          );
+          gradient.addColorStop(0, baseColor + (rp.alpha * 0.2).toFixed(3) + ")");
+          gradient.addColorStop(0.5, baseColor + (rp.alpha * 0.06).toFixed(3) + ")");
+          gradient.addColorStop(1, baseColor + "0)");
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r + ringWidth * 2, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = baseColor + (rp.alpha * baseStrength).toFixed(3) + ")";
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI * 2);
+          ctx.stroke();
+
+          rp.r += rp.grow;
+          rp.alpha = Math.max(0, rp.alpha - rp.fade);
+
+          if (rp.r > rp.maxR || rp.alpha <= 0.01) {
+            ripples.splice(i, 1);
+            i--;
+          }
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      let lastX = 0, lastY = 0, lastTime = 0;
+      document.addEventListener("mousemove", (e) => {
+        const now = performance.now();
+        const dist = Math.hypot(e.clientX - lastX, e.clientY - lastY);
+        if (dist > 6 || now - lastTime > 40) {
+          addRipple(e.clientX, e.clientY, 0.9);
+          lastX = e.clientX;
+          lastY = e.clientY;
+          lastTime = now;
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        addRipple(e.clientX, e.clientY, 1.4);
+      });
+
+      draw();
+    })();
+  </script>
+</body>
+</html>
